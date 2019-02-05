@@ -58,6 +58,27 @@ char **get_random_paths(char **paths, int n, int m)
     return random_paths;
 }
 
+//Unet code
+path_labels *get_random_paths_labels(char **paths, char **labels, int n, int m)
+{
+    path_labels *path_lab = (path_labels*)malloc( sizeof( path_labels) );
+    path_lab->random_paths = calloc(n, sizeof(char*));
+    path_lab->random_labels = calloc(n, sizeof(char*));
+    int i;
+    pthread_mutex_lock(&mutex);
+    for(i = 0; i < n; ++i){
+        int index = rand()%m;
+        path_lab->random_paths[i] = paths[index];
+	path_lab->random_labels[i] = labels[index];
+        //if(i == 0) printf("%s\n", paths[index]);
+        //printf("came here path! %d ,%s\n", index, paths[index]);
+        //printf("came here label! %d , %s\n", index, labels[index]);
+    }
+    pthread_mutex_unlock(&mutex);
+    return path_lab;
+}
+
+
 char **find_replace_paths(char **paths, int n, char *find, char *replace)
 {
     char **replace_paths = calloc(n, sizeof(char*));
@@ -970,6 +991,19 @@ data load_data_old(char **paths, int n, int m, char **labels, int k, int w, int 
     d.shallow = 0;
     d.X = load_image_paths(paths, n, w, h);
     d.y = load_labels_paths(paths, n, labels, k, 0);
+    if(m) free(paths);
+    return d;
+}
+
+//Unet code
+data load_data_unet(char **paths, int n, int m, char **labels, int w, int h)
+{
+    path_labels* path_labs;
+    path_labs = get_random_paths_labels(paths, labels, n, m);
+    data d = {0};
+    d.shallow = 0;
+    d.X = load_image_paths(path_labs->random_paths, n, w, h);
+    d.y = load_image_paths_gray(path_labs->random_labels, n, w, h);
     if(m) free(paths);
     return d;
 }

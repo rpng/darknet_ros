@@ -41,6 +41,7 @@
 extern "C" {
 #endif
 
+
 struct network;
 typedef struct network network;
 
@@ -664,6 +665,13 @@ typedef struct data {
     box **boxes;
 } data;
 
+//Unet code
+typedef struct path_labels{
+   char **random_paths;
+   char **random_labels;
+
+} path_labels;
+
 // data.h
 typedef enum {
     CLASSIFICATION_DATA, DETECTION_DATA, CAPTCHA_DATA, REGION_DATA, IMAGE_DATA, COMPARE_DATA, WRITING_DATA, SWAG_DATA, TAG_DATA, OLD_CLASSIFICATION_DATA, STUDY_DATA, DET_DATA, SUPER_DATA, LETTERBOX_DATA, REGRESSION_DATA, SEGMENTATION_DATA, INSTANCE_DATA, ISEG_DATA
@@ -778,6 +786,9 @@ LIB_API void free_layer(layer);
 LIB_API void free_data(data d);
 LIB_API pthread_t load_data(load_args args);
 LIB_API pthread_t load_data_in_thread(load_args args);
+
+//Unet code
+LIB_API data load_data_unet(char **paths, int n, int m, char **labels, int w, int h);
 
 // cuda.h
 LIB_API void cuda_pull_array(float *x_gpu, float *x, size_t n);

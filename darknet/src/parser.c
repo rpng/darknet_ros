@@ -714,6 +714,7 @@ int is_network(section *s)
             || strcmp(s->type, "[network]")==0);
 }
 
+
 network parse_network_cfg(char *filename)
 {
     return parse_network_cfg_custom(filename, 0, 0);

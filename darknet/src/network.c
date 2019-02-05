@@ -56,6 +56,17 @@ int get_current_batch(network net)
     return batch_num;
 }
 
+network *load_network_unet(char *cfg, char *weights, int clear, network *net)
+{
+    *net = parse_network_cfg(cfg);
+    if(weights && weights[0] != 0){
+	load_weights(net, weights);
+    }
+    if(clear) (*net->seen) = 0;
+    printf("%d pointer 11\n", net->gpu_index);    
+    return net;
+}
+
 void reset_momentum(network net)
 {
     if (net.momentum == 0) return;
